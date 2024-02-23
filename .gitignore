@@ -32,7 +32,9 @@ replay_pid*
 /bazel-out
 
 # Node
-/node_modules
+frontend/dentist-office/node_modules
+node_modules
+*node_modules
 npm-debug.log
 yarn-error.log
 
@@ -100,3 +102,10 @@ build/
 ### VS Code ###
 .vscode/
 
+*.jar
+backend/dentist-office/.mvn/wrapper/maven-wrapper.properties
+backend/dentist-office/mvnw
+*.cmd
+/backend/dentist-office/.mvn/wrapper/maven-wrapper.jar
+*.mvn
+frontend/dentist-office/.editorconfig
