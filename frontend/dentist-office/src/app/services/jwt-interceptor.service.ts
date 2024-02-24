@@ -12,7 +12,11 @@ export class JwtInterceptorService implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
     const jwt = this.jwtService.getAccessToken();
-    console.log("INTERCEPTED! Adding JWT: ", jwt);
+    if (jwt == null) {
+      console.log("No JWT to add :-(");
+    } else {
+      console.log("INTERCEPTED! Adding JWT");
+    }
     // if(request.url.includes('/user/refreshToken')){
     //   return next.handle(request);
     // }

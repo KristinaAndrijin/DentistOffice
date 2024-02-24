@@ -1,0 +1,11 @@
+<div *ngIf="unauthorized" class="container">
+    <h1>401 Unauthorized</h1>
+    <p>Oops! You are not authorized to access this page.</p>
+    <a href="/">Go back to login page</a>
+</div>
+
+<div *ngIf="!unauthorized" class="container">
+    <h1>403 Access denied</h1>
+    <p>Oops! You do not have permissions to access this page.</p>
+    <a href="{{page}}">Try this page instead</a>
+</div>

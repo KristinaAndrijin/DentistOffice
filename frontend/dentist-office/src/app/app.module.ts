@@ -12,13 +12,18 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { PatientMainComponent } from './patient-main/patient-main.component';
 import { JwtInterceptorService } from './services/jwt-interceptor.service';
+import { ErrorInterceptor } from './error-interceptor';
+import { DenyAccessComponent } from './deny-access/deny-access.component';
+import { DentistMainComponent } from './dentist-main/dentist-main.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    PatientMainComponent
+    PatientMainComponent,
+    DenyAccessComponent,
+    DentistMainComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +40,13 @@ import { JwtInterceptorService } from './services/jwt-interceptor.service';
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptorService,
       multi: true
-      }
+    },
+    { 
+      provide: HTTP_INTERCEPTORS, 
+      useClass: ErrorInterceptor, 
+      multi: true 
+    },
+      
 
   ],
   bootstrap: [AppComponent]

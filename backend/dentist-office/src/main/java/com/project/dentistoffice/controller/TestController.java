@@ -25,10 +25,31 @@ public class TestController {
     };
 
 	@GetMapping("jwt")
-//	@PreAuthorize("hasRole('DENTIST')")
+	@PreAuthorize("hasRole('PATIENT')")
 	public ResponseEntity<?> callJwt(Principal principal){
 		System.out.println(principal.getName());
 		Test r = testService.test();
 		return new ResponseEntity<Test>(r, HttpStatus.OK);
+	};
+
+	@GetMapping("tryPatient")
+	@PreAuthorize("hasRole('PATIENT')")
+	public ResponseEntity<?> tryPatient(Principal principal){
+		System.out.println(principal.getName());
+		return new ResponseEntity<>(HttpStatus.OK);
+	};
+
+	@GetMapping("tryDentist")
+	@PreAuthorize("hasRole('DENTIST')")
+	public ResponseEntity<?> tryDentist(Principal principal){
+		System.out.println(principal.getName());
+		return new ResponseEntity<>(HttpStatus.OK);
+	};
+
+	@GetMapping("tryBoth")
+	@PreAuthorize("hasAnyRole('DENTIST', 'PATIENT')")
+	public ResponseEntity<?> tryBoth(Principal principal){
+		System.out.println(principal.getName());
+		return new ResponseEntity<>(HttpStatus.OK);
 	};
 };

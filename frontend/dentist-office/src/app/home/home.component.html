@@ -10,7 +10,7 @@
 
                     <div class="margins">
                         <input placeholder="abc@domain.xyz" type="email" id="email" name="email" formControlName="email"/>
-                        <span *ngIf="!validEmail">Invalid email format (abc@domain.xyz)</span>
+                        <span class="span" *ngIf="!validEmail">Invalid email format (abc@domain.xyz)</span>
                     </div>
 
                     <button type="submit" id="submitButton" (keydown.enter)="submitEmail()" [disabled]="!emailForm.valid">Sign in</button>

@@ -6,13 +6,9 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class PatientService {
+export class DentistService {
 
   constructor(private http: HttpClient) { }
-
-  test():Observable<any>{
-    return this.http.get(`${environment.apiUrl}test/jwt`);
-  }
 
   tryPatient():Observable<any>{
     return this.http.get(`${environment.apiUrl}test/tryPatient`);
@@ -25,5 +21,4 @@ export class PatientService {
   tryBoth():Observable<any>{
     return this.http.get(`${environment.apiUrl}test/tryBoth`);
   }
-
 }

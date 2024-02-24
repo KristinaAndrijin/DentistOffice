@@ -1,0 +1,34 @@
+.center {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    /* text-align: center; */
+  }
+
+.container {
+    max-width: 600px;
+    margin: 100px auto;
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: red;
+}
+
+p {
+    color: #333;
+}
+
+a {
+    /* color: #062843; */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+  

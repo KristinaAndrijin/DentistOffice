@@ -92,7 +92,7 @@ export class HomeComponent implements OnInit {
           if (role == "ROLE_PATIENT") {
             this.router.navigate(["patient"]);
           } else if (role == "ROLE_DENTIST") {
-            // this.router.navigate(["dentist"]);
+            this.router.navigate(["dentist"]);
             console.log("dentist :-)")
           } else {
             this.snackBar.open("who!?", undefined, {
