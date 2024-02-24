@@ -3,12 +3,13 @@ package com.project.dentistoffice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
 
 @Entity
 @Table(name = "roles")
-public class Role implements Serializable {
+public class Role implements GrantedAuthority, Serializable {
 
 	@Id
 	@Column(name="id")
@@ -49,6 +50,20 @@ public class Role implements Serializable {
 		int result = getId() != null ? getId().hashCode() : 0;
 		result = 31 * result + (getName() != null ? getName().hashCode() : 0);
 		return result;
+	}
+
+	@JsonIgnore
+	@Override
+	public String getAuthority() {
+		return name;
+	}
+
+	@Override
+	public String toString() {
+		return "Role{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				'}';
 	}
 }
 

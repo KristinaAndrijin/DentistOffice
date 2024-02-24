@@ -5,10 +5,10 @@ import com.project.dentistoffice.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("api/test/")
@@ -19,9 +19,16 @@ public class TestController {
 	private TestService testService;
 	
 	@GetMapping("hi")
-    public ResponseEntity<?> callSaul(){
+    public ResponseEntity<?> callTest(){
 		Test r = testService.test();
     	return new ResponseEntity<Test>(r, HttpStatus.OK);
     };
-	
+
+	@GetMapping("jwt")
+//	@PreAuthorize("hasRole('DENTIST')")
+	public ResponseEntity<?> callJwt(Principal principal){
+		System.out.println(principal.getName());
+		Test r = testService.test();
+		return new ResponseEntity<Test>(r, HttpStatus.OK);
+	};
 };

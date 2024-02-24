@@ -1,39 +1,43 @@
 package com.project.dentistoffice.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name="users")
 @Entity
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false, updatable = false, unique = true)
 	private Long id;
-	private String name;
-	private String surname;
-	private String telephoneNumber;
 	private String email;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonManagedReference
 	private Role role;
 
+	@Transient
+	private String accessToken;
+
 	public User() {
 		super();
 
 	}
 
-	public User(Long id, String name, String surname, String telephoneNumber, String email,
+	public User(Long id, String email,
 				Role role) {
 		super();
 		this.id = id;
-		this.name = name;
-		this.surname = surname;
-		this.telephoneNumber = telephoneNumber;
 		this.email = email;
 		this.role = role;
 	}
@@ -44,31 +48,6 @@ public class User implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-
-	public String getTelephoneNumber() {
-		return telephoneNumber;
-	}
-
-	public void setTelephoneNumber(String telephoneNumber) {
-		this.telephoneNumber = telephoneNumber;
 	}
 
 	public String getEmail() {
@@ -82,8 +61,9 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", surname=" + surname + ", email=" + email + ", password="
-				+ ", role=" + role.toString() + "]";
+		String roleName = (role != null) ? role.getName() : "Role not set";
+		return "User [id=" + id + ", email=" + email + ", password="
+				+ ", role=" + roleName + "]";
 	}
 
 	public Role getRole() {
@@ -92,6 +72,49 @@ public class User implements Serializable {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	/******************************************************/
+	@JsonIgnore
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<Role> roles = new ArrayList<Role>();
+		roles.add(this.role);
+		return roles;
+	}
+
+	@Override
+	public String getPassword() {
+		return null;
+	}
+
+	@JsonIgnore
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
 	}
 
 }

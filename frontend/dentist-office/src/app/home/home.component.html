@@ -1,2 +1,44 @@
-<p>home works!</p>
-<button (click)="testbtn()">Test</button>
+<div *ngIf="inputEmail" class="form">
+    <form
+        method="POST"
+        [formGroup]="emailForm" 
+        (ngSubmit)="submitEmail()">
+            <div>
+                    <h2>Hello! Welcome to</h2>
+                    <h1>The ST Dental Office!</h1>
+                    <p>To continue, please enter your email address down below:</p>
+
+                    <div class="margins">
+                        <input placeholder="abc@domain.xyz" type="email" id="email" name="email" formControlName="email"/>
+                        <span *ngIf="!validEmail">Invalid email format (abc@domain.xyz)</span>
+                    </div>
+
+                    <button type="submit" id="submitButton" (keydown.enter)="submitEmail()" [disabled]="!emailForm.valid">Sign in</button>
+                    
+                    <p *ngIf="!postCodeForm" class="text-button" (click)="goToCode()">Sign up as a dentist</p>
+
+
+                </div>
+    </form>
+</div>
+
+<div *ngIf="!inputEmail" class="form">
+    <form
+        method="POST"
+        [formGroup]="codeForm" 
+        (ngSubmit)="submitCode()">
+            <div>
+                    <span>If you have already done this step, please go back to </span>
+                    <span class="text-button" (click)="goToEmail()">sign in form</span>
+                    <p>Otherwise, please enter dentist code down below:</p>
+
+                    <div class="margins">
+                        <input type="number" id="code" name="code" formControlName="code"/>
+                    </div>
+
+                    <button type="submit" id="submitButton" (keydown.enter)="submitCode()" [disabled]="!codeForm.valid">Submit</button>
+
+
+                </div>
+    </form>
+</div>
