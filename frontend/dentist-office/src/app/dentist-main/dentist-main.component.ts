@@ -11,16 +11,16 @@ export class DentistMainComponent implements OnInit {
   constructor(private service: DentistService) { }
 
   ngOnInit(): void {
-    this.service.tryDentist().subscribe({
-      next: (result: any) => {
-        console.log(result)
-      },
-      error: (error: { error: { message: undefined; }; }) => {
-        if (error?.error?.message != undefined) {
-          alert(error?.error?.message);
-        }        
-      }
-    })
+    // this.service.tryDentist().subscribe({
+    //   next: (result: any) => {
+    //     console.log(result)
+    //   },
+    //   error: (error: { error: { message: undefined; }; }) => {
+    //     if (error?.error?.message != undefined) {
+    //       alert(error?.error?.message);
+    //     }        
+    //   }
+    // })
   }
 
 }
