@@ -1,0 +1,10 @@
+<nav>
+    <div class="left" (click)="goToMainPage()">
+      ST Dental Office
+      <span *ngIf="isDentist" class="logout" (click)="configCancelTime()">Configure Notice Period</span>
+    </div>
+    <div class="right">
+      <span class="logout" (click)="logout()">Log out</span>
+    </div>
+  </nav>
+  

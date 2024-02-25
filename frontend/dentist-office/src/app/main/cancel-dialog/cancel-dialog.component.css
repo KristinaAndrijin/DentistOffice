@@ -78,5 +78,24 @@
   select {
     margin-top: 10px;
   }
+
+  .size {
+    width: 80%
+  }
   
-  
+  .buttondiv {
+    display: inline-flex;
+    place-items: center;
+    align-content: center;
+    justify-items: center;
+    width: 100%;
+  }
+
+  .btn {
+    margin: 7px;
+    background-color: red;
+  }
+  .btnN {
+    margin: 7px;
+    background-color: gray;
+  }

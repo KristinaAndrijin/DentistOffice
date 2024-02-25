@@ -90,10 +90,12 @@ export class HomeComponent implements OnInit {
           // console.log(this.jwtService.getRole());
           let role = this.jwtService.getRole();
           if (role == "ROLE_PATIENT") {
-            this.router.navigate(["patient"]);
+            // this.router.navigate(["patient"]);
+            this.router.navigate(["main"]);
           } else if (role == "ROLE_DENTIST") {
-            this.router.navigate(["dentist"]);
-            console.log("dentist :-)")
+            // this.router.navigate(["dentist"]);
+            this.router.navigate(["main"]);
+            // console.log("dentist :-)")
           } else {
             this.snackBar.open("who!?", undefined, {
               duration: 5000,

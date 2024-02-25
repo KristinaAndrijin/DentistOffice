@@ -1,0 +1,73 @@
+<div class="big-div">
+    <h1>Appointment Calendar:</h1>
+    <div class="buttondiv">
+        <button type="" (click)="table()" class="btn table">Table View</button>
+        <button type="" (click)="card()" class="btn cards" >Card View</button>
+        <button type="" (click)="add()" class="btn add">Add New</button>
+    </div>
+</div>
+<div *ngIf="isTable" class="form-container">
+    <!-- <h2 class="mb-4">Ride History</h2>
+    <div class="search">
+      <input type="text" class="input1" placeholder="From">
+      <input type="text" class="input1" placeholder="To">
+      <button type="submit" class="btn sort">Sort</button>
+    </div> -->
+    <!-- <h1>Appointment Calendar:</h1> -->
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+  
+      <ng-container matColumnDef="startDate">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let element"> {{ element.startDate }} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="startTime">
+        <th mat-header-cell *matHeaderCellDef>Time</th>
+        <td mat-cell *matCellDef="let element">{{ element.startTime }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="duration">
+        <th mat-header-cell *matHeaderCellDef>Duration</th>
+        <td mat-cell *matCellDef="let element">{{ element.duration }} min</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="patient">
+        <th mat-header-cell *matHeaderCellDef>Patient's email</th>
+        <td mat-cell *matCellDef="let element">{{ element.patient }}</td>
+      </ng-container>
+  
+
+      <ng-container matColumnDef="cancel">
+        <th mat-header-cell *matHeaderCellDef>Cancel</th>
+        <td mat-cell *matCellDef="let element">
+          <button class="redBtn" (click)="cancel(element)">Cancel</button>
+        </td>
+      </ng-container>
+    
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let element; columns: displayedColumns"
+      ></tr>
+    </table>
+  
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      showFirstLastButtons
+    ></mat-paginator>
+  </div>
+
+<div *ngIf="!isTable" class="container">
+    <div class="card" *ngFor="let x of appointments">
+        <div class="card-body">
+            <h4>Date: {{x.startDate}}</h4>
+            <h4>Time: {{x.startTime}}</h4>
+            <h4>Duration: {{x.duration}} min</h4>
+            <h4 *ngIf="isDentist">Patient: {{x.patient}}</h4>
+            <!-- <div class="buttondiv"> -->
+                <button class="redBtn mar" (click)="cancel(x)">Cancel</button>
+            <!-- </div> -->
+        </div>
+    </div>
+</div>

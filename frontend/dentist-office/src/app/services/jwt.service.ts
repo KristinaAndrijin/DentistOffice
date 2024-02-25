@@ -1,4 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import jwtDecode, {JwtPayload } from 'jwt-decode';
 
 @Injectable({
@@ -6,7 +9,7 @@ import jwtDecode, {JwtPayload } from 'jwt-decode';
 })
 export class JwtService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   getAccessToken() {
     return localStorage.getItem('accessToken');
@@ -45,6 +48,22 @@ export class JwtService {
       return decoded.id; 
     }
     return undefined;
+  }
+
+  test():Observable<any>{
+    return this.http.get(`${environment.apiUrl}test/jwt`);
+  }
+
+  tryPatient():Observable<any>{
+    return this.http.get(`${environment.apiUrl}test/tryPatient`);
+  }
+
+  tryDentist():Observable<any>{
+    return this.http.get(`${environment.apiUrl}test/tryDentist`);
+  }
+
+  tryBoth():Observable<any>{
+    return this.http.get(`${environment.apiUrl}test/tryBoth`);
   }
 
 

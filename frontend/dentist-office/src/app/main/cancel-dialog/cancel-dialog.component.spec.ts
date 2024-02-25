@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PatientMainComponent } from './patient-main.component';
+import { CancelDialogComponent } from './cancel-dialog.component';
 
-describe('PatientMainComponent', () => {
-  let component: PatientMainComponent;
-  let fixture: ComponentFixture<PatientMainComponent>;
+describe('CancelDialogComponent', () => {
+  let component: CancelDialogComponent;
+  let fixture: ComponentFixture<CancelDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PatientMainComponent ]
+      declarations: [ CancelDialogComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PatientMainComponent);
+    fixture = TestBed.createComponent(CancelDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

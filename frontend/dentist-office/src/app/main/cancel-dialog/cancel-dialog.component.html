@@ -1,0 +1,10 @@
+<div class="form">
+    <div class="margins">
+        Are you sure that you want to cancel appointment on 
+        {{this.data.obj.startDate}} at {{this.data.obj.startTime}} [{{this.data.obj.duration}} min]
+        <div class="buttondiv">
+            <button type="" (click)="cancel()" class="btn">Yes</button>
+            <button type="" (click)="no()" class="btnN">No</button>
+        </div>
+    </div>
+</div>

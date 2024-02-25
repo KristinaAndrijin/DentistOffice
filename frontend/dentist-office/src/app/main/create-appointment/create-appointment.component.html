@@ -9,7 +9,10 @@
                         <label for="date">Choose date:</label><br/>
                         <input #date class="input" type="date" id="date" name="date" formControlName="date"/>
                         
-                        <br/><br/>
+                        <br/>
+                        <hr>
+                        <br/>
+
                         
                         <label class="label">Choose duration [min]:</label> <br/>
                         <label>
@@ -20,18 +23,28 @@
                             <input name="duration" type="radio" formControlName="duration" value="60"> 60
                         </label>
 
-                        <br/><br/>
+                        <br/>
+                        <hr>
+                        <br/>
 
                         <label for="time">Choose time: </label>
                         <select #time class="inputSelect" name="time" formControlName="time">
                             <option *ngFor="let option of times;let i = 'index';" [value]="option">{{option}}</option>
                         </select>
+
+                        <br/>
+                        <hr>
+
+                        <div *ngIf="isDentist" class="margins">
+                            <label for="email">Patient's email: </label><br/>
+                            <input class="input size" #email placeholder="abc@domain.xyz" type="email" id="email" name="email" formControlName="email"/>
+                            <span class="span" *ngIf="!validEmail">Invalid email format (abc@domain.xyz)</span>
+                        </div>
+
                     </div>
 
-                    <button type="submit" id="submitButton" (keydown.enter)="submitForm()" [disabled]="!appointmentForm.valid">Create appointment</button>
-                
-
-
+                    <button type="submit" id="submitButton" (click)="submitForm()" (keydown.enter)="submitForm()" [disabled]="!appointmentForm.valid">Create appointment</button>
+            
                 </div>
     </form>
 </div>

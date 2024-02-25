@@ -1,0 +1,18 @@
+<div class="form">
+    <form
+        method="POST"
+        [formGroup]="periodForm" 
+        (ngSubmit)="submitForm()">
+            <div>
+
+                <div class="margins">
+                    <label for="period">New notice period [h]: </label><br/>
+                    <input class="input size" #period type="number" id="period" name="period" formControlName="period"/>
+                </div>
+
+                <button type="submit" id="submitButton" (click)="submitForm()" (keydown.enter)="submitForm()">Change period</button>
+        
+            </div>
+    </form>
+</div>
+

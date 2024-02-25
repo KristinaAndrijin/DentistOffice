@@ -78,5 +78,9 @@
   select {
     margin-top: 10px;
   }
+
+  .size {
+    width: 80%
+  }
   
   
