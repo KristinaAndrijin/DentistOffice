@@ -76,6 +76,7 @@ public class WebSecurityConfig {
 	        .requestMatchers("/api/user/**").permitAll()
 				.requestMatchers("/api/test/**").permitAll()
 				.requestMatchers("/api/auth/**").permitAll()
+				.requestMatchers("/api/appointment/**").permitAll()
 	        .anyRequest().authenticated()
 	        .and()
 	        .cors().and()

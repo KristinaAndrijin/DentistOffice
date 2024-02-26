@@ -14,10 +14,10 @@ public class Role implements GrantedAuthority, Serializable {
 	@Id
 	@Column(name="id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Long id;
 
 	@Column(name="name")
-	String name;
+	private String name;
 
 	public void setName(String name) {
 		this.name = name;
@@ -27,10 +27,10 @@ public class Role implements GrantedAuthority, Serializable {
 	}
 
 	@JsonIgnore
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

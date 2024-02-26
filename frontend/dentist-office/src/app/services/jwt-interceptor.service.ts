@@ -15,7 +15,7 @@ export class JwtInterceptorService implements HttpInterceptor {
     if (jwt == null) {
       console.log("No JWT to add :-(");
     } else {
-      console.log("INTERCEPTED! Adding JWT");
+      console.log("INTERCEPTED! Adding JWT ", jwt);
     }
     // if(request.url.includes('/user/refreshToken')){
     //   return next.handle(request);

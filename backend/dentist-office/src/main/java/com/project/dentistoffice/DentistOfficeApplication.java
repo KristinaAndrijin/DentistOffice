@@ -1,5 +1,6 @@
 package com.project.dentistoffice;
 
+import com.project.dentistoffice.service.AppointmentService;
 import com.project.dentistoffice.service.DentistCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -14,6 +15,9 @@ public class DentistOfficeApplication implements ApplicationRunner {
 	@Autowired
 	private DentistCodeService dentistCodeService;
 
+	@Autowired
+	private AppointmentService appointmentService;
+
 	public static void main(String[] args) {
 		SpringApplication.run(DentistOfficeApplication.class, args);
 	}
@@ -21,5 +25,6 @@ public class DentistOfficeApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		dentistCodeService.addCode();
+		appointmentService.putInitialPeriod();
 	}
 }

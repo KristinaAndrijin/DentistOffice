@@ -4,12 +4,14 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import { MatSort } from '@angular/material/sort';
 import { JwtService } from '../services/jwt.service';
-import { AppointmentDTO } from '../dto/AppointmentDTO';
+import { AppointmentIdDTO, AppointmentDTO } from '../dto/AppointmentDTO';
 import { AppointmentService } from '../services/appointment.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateAppointmentComponent } from './create-appointment/create-appointment.component';
 import { CancelDialogComponent } from './cancel-dialog/cancel-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Location } from '@angular/common';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-main',
@@ -20,11 +22,13 @@ export class MainComponent implements OnInit {
 
   isTable: boolean = true;
   displayedColumns: string[] = ['startDate', 'startTime','duration', 'patient', 'cancel'];
-  dataSource!: MatTableDataSource<AppointmentDTO>;
+  dataSource: MatTableDataSource<AppointmentIdDTO> = new MatTableDataSource<AppointmentIdDTO>();
   totalElements: number = 0;
-  appointments: AppointmentDTO[] = [];
+  appointments: AppointmentIdDTO[] = [];
   isDentist: boolean = true;
   times = ["9:00", "9:30", "10:00"];
+  options = ["Daily", "Weekly"];
+  methodForm!: FormGroup;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -33,48 +37,16 @@ export class MainComponent implements OnInit {
   }
 
   constructor(private router: Router, private route: ActivatedRoute, private jwtService: JwtService, private service: AppointmentService, 
-              private dialog: MatDialog, private snackBar: MatSnackBar) {
-    this.appointments = [
-      {
-        startDate: "lalalal",
-        startTime: "vreme",
-        patient: "pacijent",
-        duration: 4,
-      },
-      {
-        startDate: "lalalal1",
-        startTime: "vreme",
-        patient: "pacijent",
-        duration: 5,
-      },
-      {
-        startDate: "lalalal4",
-        startTime: "vreme",
-        patient: "pacijent",
-        duration: 41,
-      },
-      {
-        startDate: "lalalal3",
-        startTime: "vreme",
-        patient: "pacijent",
-        duration: 498,
-      },
-      {
-        startDate: "lalalal5",
-        startTime: "vreme",
-        patient: "pacijent",
-        duration: 498,
-      },
-      {
-        startDate: "lalalal6",
-        startTime: "vreme",
-        patient: "pacijent@gmail.com",
-        duration: 498,
-      },
-    ]
+              private dialog: MatDialog, private snackBar: MatSnackBar, private location: Location) {
    }
 
-  ngOnInit(): void {
+   async ngOnInit(): Promise<void> {
+    this.methodForm = new FormGroup({
+      method: new FormControl('Daily', [Validators.required]),
+    });
+    this.methodForm.valueChanges.subscribe((value) => {
+      this.changedValue(value);
+    })
     this.tryJwt();
     if (this.jwtService.getRole()?.includes("PATIENT")) {
       this.isDentist = false;
@@ -83,27 +55,63 @@ export class MainComponent implements OnInit {
       this.isDentist = true;
       this.displayedColumns = ['startDate', 'startTime', 'duration', 'patient', 'cancel'];
     }
-    this.totalElements = 6;
-    this.dataSource = new MatTableDataSource<AppointmentDTO>(this.appointments);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    await this.getAll();
+      
   }
 
-  cancel(obj: AppointmentDTO) {
+  async getAll(): Promise<void> {
+    try {
+      let method = this.methodForm.get('method')?.value;
+      console.log(method);
+      let result = await this.service.getAppointments(method).toPromise();
+      if (result != undefined) {
+        this.appointments = result;
+      } else {
+        console.log(":-(")
+        this.appointments = [];
+      }
+      this.totalElements = this.appointments.length;
+      this.dataSource = new MatTableDataSource<AppointmentIdDTO>(this.appointments);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  cancel(obj: AppointmentIdDTO) {
+    console.log(obj)
     const dialogRef = this.dialog.open(CancelDialogComponent, {
       data: {obj: obj},
     });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
+    dialogRef.afterClosed().subscribe(shouldCancel => {
+      console.log(shouldCancel);
+      if (shouldCancel) {
+        this.service.deleteAppointment(obj.id).subscribe({
+          next: (result: any) => {
+            console.log(result)
+            this.getAll();
+          },
+          error: (error: { error: { message: undefined; }; }) => {
+            if (error?.error?.message != undefined) {
+              this.snackBar.open(error?.error?.message, undefined, {
+                duration: 2000,
+              });
+            }        
+          }
+        })
+      }
     });
   }
 
   table() {
     this.isTable = true;
+    this.getAll();
   }
 
   card() {
     this.isTable = false;
+    this.getAll();
   }
 
   tryJwt() {
@@ -129,7 +137,36 @@ export class MainComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       // console.log(result.email);
+      let email = result.email != undefined ? result.email : 'None';
+      let dto: AppointmentDTO = {
+        startDate: result.date,
+        startTime: result.time,
+        patient: email,
+        duration: parseInt(result.duration)
+      }
+      console.log(dto);
+      this.service.addAppointment(dto).subscribe({
+        next: (result: any) => {
+          console.log(result)
+          this.getAll();
+        },
+        error: (error: { error: { message: undefined; }; }) => {
+          if (error?.error?.message != undefined) {
+            this.snackBar.open(error?.error?.message, undefined, {
+              duration: 2000,
+            });
+          }        
+        }
+      })
     });
+  }
+
+  changedValue(value: any) {
+    console.log('Form value changed:', value.method);
+    this.getAll();
+    // console.log(value.date)
+    // console.log(value.duration)
+    // console.log(value.time)
   }
 
 }

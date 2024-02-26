@@ -1,5 +1,13 @@
 <div class="big-div">
     <h1>Appointment Calendar:</h1>
+    <form
+        method="POST"
+        [formGroup]="methodForm">
+        <label for="method">Choose method: </label>
+        <select #method class="inputSelect" name="method" formControlName="method">
+            <option *ngFor="let option of options;let i = 'index';" [value]="option">{{option}}</option>
+        </select>
+    </form>
     <div class="buttondiv">
         <button type="" (click)="table()" class="btn table">Table View</button>
         <button type="" (click)="card()" class="btn cards" >Card View</button>
