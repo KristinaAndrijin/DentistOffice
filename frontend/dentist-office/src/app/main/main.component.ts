@@ -9,6 +9,7 @@ import { AppointmentService } from '../services/appointment.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateAppointmentComponent } from './create-appointment/create-appointment.component';
 import { CancelDialogComponent } from './cancel-dialog/cancel-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-main',
@@ -23,7 +24,7 @@ export class MainComponent implements OnInit {
   totalElements: number = 0;
   appointments: AppointmentDTO[] = [];
   isDentist: boolean = true;
-  times = ["aa", "la", "ba"];
+  times = ["9:00", "9:30", "10:00"];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -31,7 +32,8 @@ export class MainComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  constructor(private router: Router, private route: ActivatedRoute, private jwtService: JwtService, private service: AppointmentService, private dialog: MatDialog) {
+  constructor(private router: Router, private route: ActivatedRoute, private jwtService: JwtService, private service: AppointmentService, 
+              private dialog: MatDialog, private snackBar: MatSnackBar) {
     this.appointments = [
       {
         startDate: "lalalal",
@@ -126,7 +128,7 @@ export class MainComponent implements OnInit {
       data: {obj: obj},
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
+      // console.log(result.email);
     });
   }
 

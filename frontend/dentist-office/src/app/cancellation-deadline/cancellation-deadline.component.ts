@@ -3,13 +3,13 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
-  selector: 'app-notice-period-dialog',
-  templateUrl: './notice-period-dialog.component.html',
-  styleUrls: ['./notice-period-dialog.component.css']
+  selector: 'app-cancellation-deadline',
+  templateUrl: './cancellation-deadline.component.html',
+  styleUrls: ['./cancellation-deadline.component.css']
 })
-export class NoticePeriodDialogComponent implements OnInit {
+export class CancellationDeadlineComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public matDialogRef: MatDialogRef<NoticePeriodDialogComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public matDialogRef: MatDialogRef<CancellationDeadlineComponent>) { }
 
   periodForm!: FormGroup;
   newPeriod!: number;

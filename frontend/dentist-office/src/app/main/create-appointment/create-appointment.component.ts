@@ -37,14 +37,14 @@ export class CreateAppointmentComponent implements OnInit {
         this.appointmentForm = new FormGroup({
           date: new FormControl(today, [Validators.required]),
           duration: new FormControl('30', [Validators.required]),
-          time: new FormControl('aa', [Validators.required]),
+          time: new FormControl('9:00', [Validators.required]),
           email: new FormControl('', [Validators.required]),
       });
     } else {
       this.appointmentForm = new FormGroup({
         date: new FormControl(today, [Validators.required]),
         duration: new FormControl('30', [Validators.required]),
-        time: new FormControl('aa', [Validators.required]),
+        time: new FormControl('9:00', [Validators.required]),
     });
     }
   }

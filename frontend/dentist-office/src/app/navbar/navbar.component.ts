@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtService } from '../services/jwt.service';
 import { MatDialog } from '@angular/material/dialog';
-import { NoticePeriodDialogComponent } from '../notice-period-dialog/notice-period-dialog.component';
+import { CancellationDeadlineComponent } from '../cancellation-deadline/cancellation-deadline.component';
 
 @Component({
   selector: 'app-navbar',
@@ -34,7 +34,7 @@ export class NavbarComponent implements OnInit {
 
   configCancelTime() {
     let obj = 5;
-    const dialogRef = this.dialog.open(NoticePeriodDialogComponent, {
+    const dialogRef = this.dialog.open(CancellationDeadlineComponent, {
       data: {obj: obj},
     });
     dialogRef.afterClosed().subscribe(result => {

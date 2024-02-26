@@ -20,7 +20,7 @@ import { MainComponent } from './main/main.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CreateAppointmentComponent } from './main/create-appointment/create-appointment.component';
 import { CancelDialogComponent } from './main/cancel-dialog/cancel-dialog.component';
-import { NoticePeriodDialogComponent } from './notice-period-dialog/notice-period-dialog.component';
+import { CancellationDeadlineComponent } from './cancellation-deadline/cancellation-deadline.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +31,7 @@ import { NoticePeriodDialogComponent } from './notice-period-dialog/notice-perio
     MainComponent,
     NavbarComponent,
     CancelDialogComponent,
-    NoticePeriodDialogComponent
+    CancellationDeadlineComponent
   ],
   imports: [
     BrowserModule,
