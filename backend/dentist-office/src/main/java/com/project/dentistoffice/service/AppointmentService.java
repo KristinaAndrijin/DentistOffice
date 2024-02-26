@@ -58,6 +58,10 @@ public class AppointmentService {
 //    }
 
     public Appointment addAppointment(AppointmentDTO dto, String email) {
+        List<String> times = generateTimes(new AppointmentTimeDTO(dto.getStartDate(), dto.getDuration() == 60));
+        if (!times.contains(dto.getStartTime())) {
+            throw new CannotCreateObjectException("Cannot create appointment");
+        }
         Appointment appointment = new Appointment();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
@@ -84,10 +88,9 @@ public class AppointmentService {
         } else {
             if (patient.getRole().getName().equals("ROLE_DENTIST")) {
                 throw new CannotCreateObjectException("Cannot create appointment");
-            } else {
-                if (!dto.getPatient().equals(email)) {
-                    throw new CannotCreateObjectException("Cannot create appointment");
-                }
+            }
+            if (!eUser.getRole().getName().equals("ROLE_DENTIST") && !eUser.getEmail().equals(patient.getEmail())) {
+                throw new CannotCreateObjectException("Cannot create appointment");
             }
         }
         appointment.setUser(patient);
@@ -147,10 +150,19 @@ public class AppointmentService {
     }
 
     public void deleteAppointment(Long id, String email) {
+        long cancelletionDeadline = this.getPeriod();
         User user = userRepository.findUserByEmail(email);
         Optional<Appointment> opt = appointmentRepository.findByIdAndIsCancelled(id, false);
         if (opt.isPresent()) {
             Appointment appointment = opt.get();
+            Calendar calendar = Calendar.getInstance();
+            Date now = new Date();
+            calendar.setTime(appointment.getDateTime());
+            calendar.add(Calendar.HOUR_OF_DAY, - (int) cancelletionDeadline);
+            Date newDate = calendar.getTime();
+            if (now.after(newDate) && user.getRole().getName().equals("ROLE_PATIENT")) {
+                throw new CannotCreateObjectException("It's too soon to cancel this appointment");
+            }
             if (appointment.getUser().getEmail().equals(email) || user.getRole().getName().equals("ROLE_DENTIST")) {
                 appointment.setCancelled(true);
                 appointmentRepository.saveAndFlush(appointment);
@@ -167,10 +179,15 @@ public class AppointmentService {
     }
 
     public void putInitialPeriod() {
-        CancellationPeriod cancellationPeriod = new CancellationPeriod();
-        cancellationPeriod.setPeriod(24);
-        cancellationPeriod.setId(1L);
-        periodRepository.saveAndFlush(cancellationPeriod);
+        List<CancellationPeriod> cancellationPeriodList = periodRepository.findAll();
+        if (cancellationPeriodList.size() == 0 ) {
+            CancellationPeriod cancellationPeriod = new CancellationPeriod();
+            cancellationPeriod.setPeriod(24);
+            cancellationPeriod.setId(1L);
+            periodRepository.saveAndFlush(cancellationPeriod);
+        } else {
+            System.out.println("tu je vec");
+        }
     }
 
     public void changeCancellationPeriod(long period) {

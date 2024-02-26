@@ -1,6 +1,7 @@
 package com.project.dentistoffice.controller;
 
 import com.project.dentistoffice.dto.*;
+import com.project.dentistoffice.exception.CannotCreateObjectException;
 import com.project.dentistoffice.exception.ObjectNotFoundException;
 import com.project.dentistoffice.model.Appointment;
 import com.project.dentistoffice.service.AppointmentService;
@@ -57,6 +58,8 @@ public class AppointmentController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ObjectNotFoundException e) {
             return new ResponseEntity<ErrorDTO>(new ErrorDTO(e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (CannotCreateObjectException e) {
+            return new ResponseEntity<ErrorDTO>(new ErrorDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     };
 
