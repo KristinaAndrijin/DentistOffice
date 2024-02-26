@@ -109,4 +109,3 @@ backend/dentist-office/mvnw
 /backend/dentist-office/.mvn/wrapper/maven-wrapper.jar
 *.mvn
 frontend/dentist-office/.editorconfig
-backend/dentist-office/src/main/resources/application.properties
