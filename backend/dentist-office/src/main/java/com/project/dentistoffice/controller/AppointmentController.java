@@ -33,6 +33,7 @@ public class AppointmentController {
             Appointment appointment = appointmentService.addAppointment(dto, principal.getName());
             return new ResponseEntity<>(appointment, HttpStatus.OK);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return new ResponseEntity<ErrorDTO>(new ErrorDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     };

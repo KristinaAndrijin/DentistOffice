@@ -11,9 +11,14 @@ import com.project.dentistoffice.repository.AppointmentRepository;
 import com.project.dentistoffice.repository.PeriodRepository;
 import com.project.dentistoffice.repository.RoleRepository;
 import com.project.dentistoffice.repository.UserRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -31,6 +36,9 @@ public class AppointmentService {
     @Autowired
     private PeriodRepository periodRepository;
 
+//    @Autowired
+//    private JavaMailSender mailSender;
+
     private List<String> getAllTimes() {
         List<String> times = new ArrayList<>();
         for (int i = 9; i < 17; i++) {
@@ -39,6 +47,23 @@ public class AppointmentService {
         }
         return times;
     }
+
+//    private void sendEmail(String recipientEmail, String content)
+//            throws MessagingException, UnsupportedEncodingException {
+//        MimeMessage message = mailSender.createMimeMessage();
+//        MimeMessageHelper helper = new MimeMessageHelper(message);
+//
+//        helper.setFrom("appe0664@gmail.com", "Dental Office Support");
+//        helper.setTo(recipientEmail);
+//
+//        String subject = "Appointment changes";
+//
+//        helper.setSubject(subject);
+//
+//        helper.setText(content, true);
+//
+//        mailSender.send(message);
+//    }
 
     public Appointment addAppointment(AppointmentDTO dto, String email) {
         Appointment appointment = new Appointment();
@@ -76,7 +101,12 @@ public class AppointmentService {
         appointment.setUser(patient);
         appointment.setCancelled(false);
         appointment.setLastHour(dto.getDuration() == 60);
-        return appointmentRepository.saveAndFlush(appointment);
+        appointment = appointmentRepository.saveAndFlush(appointment);
+//        User dentist = userRepository.findByRole(roleRepository.findByName("ROLE_DENTIST"));
+//        String content = "Appointment for " + dto.getStartDate() + " " + dto.getStartTime() + "is just made!";
+//        this.sendEmail(patient.getEmail(), content);
+//        this.sendEmail(dentist.getEmail(), content);
+        return appointment;
     }
 
     private boolean isDateInFuture(Date date) {
@@ -132,6 +162,10 @@ public class AppointmentService {
             if (appointment.getUser().getEmail().equals(email) || user.getRole().getName().equals("ROLE_DENTIST")) {
                 appointment.setCancelled(true);
                 appointmentRepository.saveAndFlush(appointment);
+//                String content = "Appointment for " + appointment.getDateTime().toString() + "is just deleted!";
+//                this.sendEmail(appointment.getUser().getEmail(), content);
+//                User dentist = userRepository.findByRole(roleRepository.findByName("ROLE_DENTIST"));
+//                this.sendEmail(dentist.getEmail(), content);
             } else {
                 throw new ObjectNotFoundException("Appointment not yours");
             }
@@ -164,4 +198,6 @@ public class AppointmentService {
         }
         return 24L;
     }
+
+
 }
