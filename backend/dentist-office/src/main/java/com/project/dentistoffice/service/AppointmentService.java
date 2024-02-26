@@ -2,6 +2,7 @@ package com.project.dentistoffice.service;
 
 import com.project.dentistoffice.dto.AppointmentDTO;
 import com.project.dentistoffice.dto.AppointmentIdDTO;
+import com.project.dentistoffice.dto.AppointmentTimeDTO;
 import com.project.dentistoffice.exception.CannotCreateObjectException;
 import com.project.dentistoffice.exception.ObjectNotFoundException;
 import com.project.dentistoffice.model.Appointment;
@@ -38,15 +39,6 @@ public class AppointmentService {
 
 //    @Autowired
 //    private JavaMailSender mailSender;
-
-    private List<String> getAllTimes() {
-        List<String> times = new ArrayList<>();
-        for (int i = 9; i < 17; i++) {
-            times.add(Integer.toString(i) + ":00");
-            times.add(Integer.toString(i) + ":30");
-        }
-        return times;
-    }
 
 //    private void sendEmail(String recipientEmail, String content)
 //            throws MessagingException, UnsupportedEncodingException {
@@ -197,6 +189,103 @@ public class AppointmentService {
             return cancellationPeriod.getPeriod();
         }
         return 24L;
+    }
+
+    public List<String> generateTimes(AppointmentTimeDTO dto) {
+        String DtoDate = dto.getDate();
+        boolean lastsHour = dto.isLastHour();
+        List<String> availableAppointments = new ArrayList<>();
+        List<String> potentialAppointments = this.getAllTimes(lastsHour);
+        Set<String> toBeExcluded = new HashSet<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Calendar calendar = Calendar.getInstance();
+        try {
+            Date date = dateFormat.parse(DtoDate + " 00:00");
+            List<Appointment> scheduledAppointments = getAll(date);
+            System.out.println(scheduledAppointments);
+            for (String potential : potentialAppointments) {
+                Date appointmentStart = dateFormat.parse(DtoDate + " " + potential);
+                calendar.setTime(appointmentStart);
+                if (dto.isLastHour()) {
+                    calendar.add(Calendar.MINUTE, 60);
+                } else {
+                    calendar.add(Calendar.MINUTE, 30);
+                }
+                Date appointmentEnd = calendar.getTime();
+//                System.out.println(appointmentStart + "              "  +appointmentEnd);
+                for (Appointment scheduled : scheduledAppointments) {
+                    Date scheduledDateStart = scheduled.getDateTime();
+                    calendar.setTime(scheduledDateStart);
+                    scheduledDateStart = calendar.getTime();
+                    if (scheduled.isLastHour()) {
+                        calendar.add(Calendar.MINUTE, 60);
+                    } else {
+                        calendar.add(Calendar.MINUTE, 30);
+                    }
+                    Date scheduledDateEnd = calendar.getTime();
+                    if ((scheduledDateStart.after(appointmentStart) && scheduledDateStart.before(appointmentEnd)) ||
+                            (scheduledDateStart.equals(appointmentStart) && scheduledDateStart.before(appointmentEnd)) ||
+                            (scheduledDateEnd.after(appointmentStart) && scheduledDateEnd.before(appointmentEnd)) ||
+                            (scheduledDateEnd.after(appointmentStart) && scheduledDateEnd.equals(appointmentEnd))) {
+                        System.out.println(appointmentStart + "        "  +appointmentEnd);
+                        toBeExcluded.add(potential);
+                    }
+//                    if (scheduledDateStart.after(appointmentStart)) {
+//                        System.out.println("after " + scheduledDateStart + "        "  +appointmentStart);
+//                    }
+//                    if (scheduledDateStart.before(appointmentEnd)) {
+//                        System.out.println("before " + scheduledDateStart + "        "  +appointmentEnd);
+//                    }
+//
+//                    if (scheduledDateStart.equals(appointmentStart)) {
+//                        System.out.println("start " + scheduledDateStart + "        "  +appointmentStart);
+//                    }
+//                    if (scheduledDateStart.equals(appointmentEnd)) {
+//                        System.out.println("end " + scheduledDateStart + "        "  +appointmentEnd);
+//                    }
+                }
+            }
+        } catch (ParseException e) {
+            throw new CannotCreateObjectException("Error parsing date: " + e.getMessage());
+        }
+        for (String potential : potentialAppointments) {
+            if (!toBeExcluded.contains(potential)) {
+                availableAppointments.add(potential);
+            }
+        }
+        System.out.println(availableAppointments);
+        return availableAppointments;
+    }
+
+    private List<String> getAllTimes(boolean lastsHours) {
+        List<String> times = new ArrayList<>();
+        for (int i = 9; i < 17; i++) {
+            if (i == 9) {
+                times.add("0" + Integer.toString(i) + ":00");
+                times.add("0" + Integer.toString(i) + ":30");
+            } else {
+                times.add(Integer.toString(i) + ":00");
+                if (i != 16 || !lastsHours) {
+                    times.add(Integer.toString(i) + ":30");
+                }
+            }
+        }
+        return times;
+    }
+
+    private List<Appointment> getAll(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.HOUR_OF_DAY, 24);
+        Date end = calendar.getTime();
+        List<Appointment> appointments = appointmentRepository.findAll();
+        List<Appointment> ret = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            if (appointment.getDateTime().after(date) && appointment.getDateTime().before(end) && !appointment.isCancelled()) {
+                ret.add(appointment);
+            }
+        }
+        return ret;
     }
 
 

@@ -1,9 +1,6 @@
 package com.project.dentistoffice.controller;
 
-import com.project.dentistoffice.dto.AppointmentDTO;
-import com.project.dentistoffice.dto.AppointmentIdDTO;
-import com.project.dentistoffice.dto.CodeDTO;
-import com.project.dentistoffice.dto.ErrorDTO;
+import com.project.dentistoffice.dto.*;
 import com.project.dentistoffice.exception.ObjectNotFoundException;
 import com.project.dentistoffice.model.Appointment;
 import com.project.dentistoffice.service.AppointmentService;
@@ -75,5 +72,17 @@ public class AppointmentController {
     public ResponseEntity<?> periodGet(Principal principal){
         long period = appointmentService.getPeriod();
         return new ResponseEntity<>(period, HttpStatus.OK);
+    };
+
+    @PostMapping("/generateTimes")
+//    @PreAuthorize("hasAnyRole('DENTIST', 'PATIENT')")
+    public ResponseEntity<?> generateTimes(@RequestBody AppointmentTimeDTO dto){
+        try {
+            List<String> times = appointmentService.generateTimes(dto);
+            return new ResponseEntity<>(times, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<ErrorDTO>(new ErrorDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
     };
 }

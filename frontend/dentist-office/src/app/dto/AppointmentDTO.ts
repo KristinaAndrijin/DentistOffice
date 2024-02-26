@@ -12,3 +12,8 @@ export interface AppointmentIdDTO {
     patient: string;
     duration: number;
 }
+
+export interface AppointmentTimeDTO {
+    date: string;
+    lastHour: boolean;
+}

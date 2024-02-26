@@ -26,7 +26,7 @@ export class MainComponent implements OnInit {
   totalElements: number = 0;
   appointments: AppointmentIdDTO[] = [];
   isDentist: boolean = true;
-  times = ["9:00", "9:30", "10:00"];
+  times = [];
   options = ["Daily", "Weekly"];
   methodForm!: FormGroup;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -136,28 +136,30 @@ export class MainComponent implements OnInit {
       data: {obj: obj},
     });
     dialogRef.afterClosed().subscribe(result => {
+      if (result != undefined) {
       // console.log(result.email);
-      let email = result.email != undefined ? result.email : 'None';
-      let dto: AppointmentDTO = {
-        startDate: result.date,
-        startTime: result.time,
-        patient: email,
-        duration: parseInt(result.duration)
-      }
-      console.log(dto);
-      this.service.addAppointment(dto).subscribe({
-        next: (result: any) => {
-          console.log(result)
-          this.getAll();
-        },
-        error: (error: { error: { message: undefined; }; }) => {
-          if (error?.error?.message != undefined) {
-            this.snackBar.open(error?.error?.message, undefined, {
-              duration: 2000,
-            });
-          }        
+        let email = result.email != undefined ? result.email : 'None';
+        let dto: AppointmentDTO = {
+          startDate: result.date,
+          startTime: result.time,
+          patient: email,
+          duration: parseInt(result.duration)
         }
-      })
+        console.log(dto);
+        this.service.addAppointment(dto).subscribe({
+          next: (result: any) => {
+            console.log(result)
+            this.getAll();
+          },
+          error: (error: { error: { message: undefined; }; }) => {
+            if (error?.error?.message != undefined) {
+              this.snackBar.open(error?.error?.message, undefined, {
+                duration: 2000,
+              });
+            }        
+          }
+        })
+      }
     });
   }
 

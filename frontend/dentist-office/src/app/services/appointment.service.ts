@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AppointmentDTO, AppointmentIdDTO } from '../dto/AppointmentDTO';
+import { AppointmentDTO, AppointmentIdDTO, AppointmentTimeDTO } from '../dto/AppointmentDTO';
 import { CodeDTO } from '../dto/codeDTO';
 
 @Injectable({
@@ -34,6 +34,10 @@ export class AppointmentService {
 
   periodGet():Observable<any> {
     return this.http.get(`${environment.apiUrl}appointment/period`);
+}
+
+getTimes(appointment: AppointmentTimeDTO):Observable<any>{
+  return this.http.post(`${environment.apiUrl}appointment/generateTimes`, appointment);
 }
 
 }

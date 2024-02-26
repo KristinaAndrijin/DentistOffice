@@ -1,7 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-
+import { AppointmentTimeDTO } from 'src/app/dto/AppointmentDTO';
+import { AppointmentService } from 'src/app/services/appointment.service';
 
 @Component({
   selector: 'app-create-appointment',
@@ -10,7 +11,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 })
 export class CreateAppointmentComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public matDialogRef: MatDialogRef<CreateAppointmentComponent>) { }
+  constructor(private service: AppointmentService, @Inject(MAT_DIALOG_DATA) public data: any, public matDialogRef: MatDialogRef<CreateAppointmentComponent>) { }
 
   appointmentForm!: FormGroup;
   times!: [];
@@ -19,7 +20,7 @@ export class CreateAppointmentComponent implements OnInit {
   validEmail: boolean = true;
 
   ngOnInit(): void {
-
+    this.shouldGetData = false;
     console.log(this.data);
     this.times = this.data.obj.times;
     this.isDentist = this.data.obj.isDentist;
@@ -37,16 +38,32 @@ export class CreateAppointmentComponent implements OnInit {
         this.appointmentForm = new FormGroup({
           date: new FormControl(today, [Validators.required]),
           duration: new FormControl('30', [Validators.required]),
-          time: new FormControl('9:00', [Validators.required]),
+          time: new FormControl("", [Validators.required]),
           email: new FormControl('', [Validators.required]),
       });
     } else {
       this.appointmentForm = new FormGroup({
         date: new FormControl(today, [Validators.required]),
         duration: new FormControl('30', [Validators.required]),
-        time: new FormControl('9:00', [Validators.required]),
+        time: new FormControl('', [Validators.required]),
     });
     }
+
+    let dto: AppointmentTimeDTO = {
+      date: today,
+      lastHour: false
+    }
+    this.service.getTimes(dto).subscribe({
+      next: (result: any) => {
+        // console.log(result)
+        this.times = result;
+      },
+      error: (error: { error: { message: undefined; }; }) => {
+        if (error?.error?.message != undefined) {
+          alert(error?.error?.message);
+        }        
+      }
+    })
   }
 
   submitForm() {
@@ -83,13 +100,29 @@ export class CreateAppointmentComponent implements OnInit {
   }
 
   changedValue(value: any) {
-    console.log('Form value changed:', value);
+    // console.log('Form value changed:', value);
     // console.log(value.date)
     // console.log(value.duration)
     // console.log(value.time)
+    let dto: AppointmentTimeDTO = {
+      date: value.date,
+      lastHour: value.duration == 60
+    }
+    this.service.getTimes(dto).subscribe({
+      next: (result: any) => {
+        // console.log(result)
+        this.times = result;
+      },
+      error: (error: { error: { message: undefined; }; }) => {
+        if (error?.error?.message != undefined) {
+          alert(error?.error?.message);
+        }        
+      }
+    })
   }
 
   ngOnDestroy(): void {
+    console.log(this.shouldGetData);
     if (this.shouldGetData) {
       if (this.isDentist) {
         const emailFromForm = this.appointmentForm.get('email')?.value;
@@ -117,11 +150,12 @@ export class CreateAppointmentComponent implements OnInit {
         this.matDialogRef.close(ret);
       }
       // this.matDialogRef.close(ret);
+      this.shouldGetData = false;
     } else {
       let some = {
         aaa: '222'
       }
-      this.matDialogRef.close(some);
+      this.matDialogRef.close();
     }
     this.shouldGetData = false;
   }
